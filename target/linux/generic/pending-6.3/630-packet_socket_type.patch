@@ -30,7 +30,7 @@ Signed-off-by: Felix Fietkau <nbd@nbd.name>
  #define PACKET_FANOUT_LB		1
 --- a/net/packet/af_packet.c
 +++ b/net/packet/af_packet.c
-@@ -1862,6 +1862,7 @@ static int packet_rcv_spkt(struct sk_buf
+@@ -1860,6 +1860,7 @@ static int packet_rcv_spkt(struct sk_buf
  {
  	struct sock *sk;
  	struct sockaddr_pkt *spkt;
@@ -38,7 +38,7 @@ Signed-off-by: Felix Fietkau <nbd@nbd.name>
  
  	/*
  	 *	When we registered the protocol we saved the socket in the data
-@@ -1869,6 +1870,7 @@ static int packet_rcv_spkt(struct sk_buf
+@@ -1867,6 +1868,7 @@ static int packet_rcv_spkt(struct sk_buf
  	 */
  
  	sk = pt->af_packet_priv;
@@ -46,7 +46,7 @@ Signed-off-by: Felix Fietkau <nbd@nbd.name>
  
  	/*
  	 *	Yank back the headers [hope the device set this
-@@ -1881,7 +1883,7 @@ static int packet_rcv_spkt(struct sk_buf
+@@ -1879,7 +1881,7 @@ static int packet_rcv_spkt(struct sk_buf
  	 *	so that this procedure is noop.
  	 */
  
@@ -55,7 +55,7 @@ Signed-off-by: Felix Fietkau <nbd@nbd.name>
  		goto out;
  
  	if (!net_eq(dev_net(dev), sock_net(sk)))
-@@ -2129,12 +2131,12 @@ static int packet_rcv(struct sk_buff *sk
+@@ -2127,12 +2129,12 @@ static int packet_rcv(struct sk_buff *sk
  	unsigned int snaplen, res;
  	bool is_drop_n_account = false;
  
@@ -71,7 +71,7 @@ Signed-off-by: Felix Fietkau <nbd@nbd.name>
  	if (!net_eq(dev_net(dev), sock_net(sk)))
  		goto drop;
  
-@@ -2261,12 +2263,12 @@ static int tpacket_rcv(struct sk_buff *s
+@@ -2259,12 +2261,12 @@ static int tpacket_rcv(struct sk_buff *s
  	BUILD_BUG_ON(TPACKET_ALIGN(sizeof(*h.h2)) != 32);
  	BUILD_BUG_ON(TPACKET_ALIGN(sizeof(*h.h3)) != 48);
  
@@ -87,7 +87,7 @@ Signed-off-by: Felix Fietkau <nbd@nbd.name>
  	if (!net_eq(dev_net(dev), sock_net(sk)))
  		goto drop;
  
-@@ -3372,6 +3374,7 @@ static int packet_create(struct net *net
+@@ -3370,6 +3372,7 @@ static int packet_create(struct net *net
  	mutex_init(&po->pg_vec_lock);
  	po->rollover = NULL;
  	po->prot_hook.func = packet_rcv;

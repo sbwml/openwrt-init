@@ -76,7 +76,7 @@ Signed-off-by: Alexandros C. Couloumbis <alex@ozo.com>
  
  /* Setting default compression mode */
  #ifdef CONFIG_JFFS2_CMODE_NONE
-@@ -417,6 +420,9 @@ int __init jffs2_compressors_init(void)
+@@ -417,6 +420,9 @@ exit:
  int jffs2_compressors_exit(void)
  {
  /* Unregistering compressors */
@@ -101,7 +101,7 @@ Signed-off-by: Alexandros C. Couloumbis <alex@ozo.com>
  
  #define JFFS2_RUBINMIPS_DISABLED /* RUBINs will be used only */
  #define JFFS2_DYNRUBIN_DISABLED  /*	   for decompression */
-@@ -116,4 +116,9 @@ static inline int jffs2_lzo_init(void) { return 0; }
+@@ -116,4 +116,9 @@ static inline int jffs2_lzo_init(void) {
  static inline void jffs2_lzo_exit(void) {}
  #endif
  
@@ -1102,7 +1102,7 @@ Signed-off-by: Alexandros C. Couloumbis <alex@ozo.com>
  # ZLIB_INFLATE; DECOMPRESS_GZIP is just a wrapper.)
 --- a/lib/Makefile
 +++ b/lib/Makefile
-@@ -132,6 +132,16 @@ CFLAGS_kobject.o += -DDEBUG
+@@ -138,6 +138,16 @@ CFLAGS_kobject.o += -DDEBUG
  CFLAGS_kobject_uevent.o += -DDEBUG
  endif
  
@@ -1119,7 +1119,7 @@ Signed-off-by: Alexandros C. Couloumbis <alex@ozo.com>
  obj-$(CONFIG_DEBUG_INFO_REDUCED) += debug_info.o
  CFLAGS_debug_info.o += $(call cc-option, -femit-struct-debug-detailed=any)
  
-@@ -192,6 +202,8 @@ obj-$(CONFIG_ZSTD_COMPRESS) += zstd/
+@@ -198,6 +208,8 @@ obj-$(CONFIG_ZSTD_COMPRESS) += zstd/
  obj-$(CONFIG_ZSTD_DECOMPRESS) += zstd/
  obj-$(CONFIG_XZ_DEC) += xz/
  obj-$(CONFIG_RAID6_PQ) += raid6/

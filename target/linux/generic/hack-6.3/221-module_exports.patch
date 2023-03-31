@@ -56,7 +56,7 @@ Signed-off-by: Felix Fietkau <nbd@nbd.name>
  	}								\
  									\
  	/* __*init sections */						\
-@@ -1007,6 +1017,8 @@
+@@ -1004,6 +1014,8 @@
  #define COMMON_DISCARDS							\
  	SANITIZER_DISCARDS						\
  	PATCHABLE_DISCARDS						\
@@ -91,7 +91,7 @@ Signed-off-by: Felix Fietkau <nbd@nbd.name>
  	    "__kstrtabns_" #sym ":					\n"	\
 --- a/scripts/Makefile.build
 +++ b/scripts/Makefile.build
-@@ -390,7 +390,7 @@ targets += $(real-dtb-y) $(lib-y) $(alwa
+@@ -380,7 +380,7 @@ targets += $(real-dtb-y) $(lib-y) $(alwa
  # Linker scripts preprocessor (.lds.S -> .lds)
  # ---------------------------------------------------------------------------
  quiet_cmd_cpp_lds_S = LDS     $@

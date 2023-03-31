@@ -12,7 +12,7 @@ This reverts commit 738136a0e3757a8534df3ad97d6ff6d7f429f6c1.
 
 --- a/include/net/netlink.h
 +++ b/include/net/netlink.h
-@@ -949,27 +949,6 @@ static inline struct nlmsghdr *nlmsg_put
+@@ -950,27 +950,6 @@ static inline struct nlmsghdr *nlmsg_put
  }
  
  /**

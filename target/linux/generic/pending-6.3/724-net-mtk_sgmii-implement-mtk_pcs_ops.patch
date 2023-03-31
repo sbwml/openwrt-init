@@ -15,7 +15,7 @@ Signed-off-by: Daniel Golle <daniel@makrotopia.org>
 
 --- a/drivers/net/ethernet/mediatek/mtk_sgmii.c
 +++ b/drivers/net/ethernet/mediatek/mtk_sgmii.c
-@@ -163,11 +163,29 @@ static void mtk_pcs_link_up(struct phyli
+@@ -167,11 +167,29 @@ static void mtk_pcs_link_up(struct phyli
  	}
  }
  

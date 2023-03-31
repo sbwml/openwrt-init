@@ -12,7 +12,7 @@ Signed-off-by: Etienne Champetier <champetier.etienne@gmail.com>
 
 --- a/net/bridge/br_input.c
 +++ b/net/bridge/br_input.c
-@@ -150,10 +150,14 @@ int br_handle_frame_finish(struct net *n
+@@ -151,10 +151,14 @@ int br_handle_frame_finish(struct net *n
  		}
  	}
  
@@ -30,7 +30,7 @@ Signed-off-by: Etienne Champetier <champetier.etienne@gmail.com>
  	if (IS_ENABLED(CONFIG_INET) &&
 --- a/net/bridge/br_private.h
 +++ b/net/bridge/br_private.h
-@@ -501,6 +501,8 @@ struct net_bridge {
+@@ -516,6 +516,8 @@ struct net_bridge {
  	u16				group_fwd_mask;
  	u16				group_fwd_mask_required;
  

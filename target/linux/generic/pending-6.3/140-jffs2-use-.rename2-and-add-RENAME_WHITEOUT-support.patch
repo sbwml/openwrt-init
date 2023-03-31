@@ -6,11 +6,9 @@ It is required for renames on overlayfs
 Signed-off-by: Felix Fietkau <nbd@nbd.name>
 ---
 
-diff --git a/fs/jffs2/dir.c b/fs/jffs2/dir.c
-index 5075a0a6d..cf453b28f 100644
 --- a/fs/jffs2/dir.c
 +++ b/fs/jffs2/dir.c
-@@ -614,8 +614,8 @@ static int jffs2_rmdir (struct inode *dir_i, struct dentry *dentry)
+@@ -614,8 +614,8 @@ static int jffs2_rmdir (struct inode *di
  	return ret;
  }
  
@@ -21,7 +19,7 @@ index 5075a0a6d..cf453b28f 100644
  {
  	struct jffs2_inode_info *f, *dir_f;
  	struct jffs2_sb_info *c;
-@@ -754,7 +754,11 @@ static int jffs2_mknod (struct mnt_idmap *idmap, struct inode *dir_i,
+@@ -754,7 +754,11 @@ static int jffs2_mknod (struct mnt_idmap
  	mutex_unlock(&dir_f->sem);
  	jffs2_complete_reservation(c);
  
@@ -34,7 +32,7 @@ index 5075a0a6d..cf453b28f 100644
  	return 0;
  
   fail:
-@@ -762,6 +766,19 @@ static int jffs2_mknod (struct mnt_idmap *idmap, struct inode *dir_i,
+@@ -762,6 +766,19 @@ static int jffs2_mknod (struct mnt_idmap
  	return ret;
  }
  
@@ -54,7 +52,7 @@ index 5075a0a6d..cf453b28f 100644
  static int jffs2_rename (struct mnt_idmap *idmap,
  			 struct inode *old_dir_i, struct dentry *old_dentry,
  			 struct inode *new_dir_i, struct dentry *new_dentry,
-@@ -773,7 +790,7 @@ static int jffs2_rename (struct mnt_idmap *idmap,
+@@ -773,7 +790,7 @@ static int jffs2_rename (struct mnt_idma
  	uint8_t type;
  	uint32_t now;
  
@@ -63,7 +61,7 @@ index 5075a0a6d..cf453b28f 100644
  		return -EINVAL;
  
  	/* The VFS will check for us and prevent trying to rename a
-@@ -839,9 +856,14 @@ static int jffs2_rename (struct mnt_idmap *idmap,
+@@ -839,9 +856,14 @@ static int jffs2_rename (struct mnt_idma
  	if (d_is_dir(old_dentry) && !victim_f)
  		inc_nlink(new_dir_i);
  

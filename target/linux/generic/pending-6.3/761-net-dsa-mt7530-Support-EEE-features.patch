@@ -9,7 +9,7 @@ Content-Transfer-Encoding: 8bit
 Signed-off-by: René van Dorst <opensource@vdorst.com>
 --- a/drivers/net/dsa/mt7530.c
 +++ b/drivers/net/dsa/mt7530.c
-@@ -2855,9 +2855,13 @@ static void mt753x_phylink_mac_link_up(s
+@@ -2860,9 +2860,13 @@ static void mt753x_phylink_mac_link_up(s
  	switch (speed) {
  	case SPEED_1000:
  		mcr |= PMCR_FORCE_SPEED_1000;
@@ -23,7 +23,7 @@ Signed-off-by: René van Dorst <opensource@vdorst.com>
  		break;
  	}
  	if (duplex == DUPLEX_FULL) {
-@@ -3157,6 +3161,54 @@ static int mt753x_set_mac_eee(struct dsa
+@@ -3162,6 +3166,54 @@ static int mt753x_set_mac_eee(struct dsa
  
  	return 0;
  }
@@ -93,7 +93,7 @@ Signed-off-by: René van Dorst <opensource@vdorst.com>
  /* Register for MIB */
  #define MT7530_PORT_MIB_COUNTER(x)	(0x4000 + (x) * 0x100)
  #define MT7530_MIB_CCR			0x4fe0
-@@ -818,6 +824,7 @@ struct mt7530_priv {
+@@ -825,6 +831,7 @@ struct mt7530_priv {
  	unsigned int		p5_intf_sel;
  	u8			mirror_rx;
  	u8			mirror_tx;

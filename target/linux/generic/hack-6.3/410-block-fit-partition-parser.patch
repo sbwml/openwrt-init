@@ -1,6 +1,6 @@
 --- a/block/blk.h
 +++ b/block/blk.h
-@@ -411,6 +411,8 @@ void blk_free_ext_minor(unsigned int min
+@@ -418,6 +418,8 @@ void blk_free_ext_minor(unsigned int min
  #define ADDPART_FLAG_NONE	0
  #define ADDPART_FLAG_RAID	1
  #define ADDPART_FLAG_WHOLEDISK	2
@@ -100,7 +100,7 @@
  
 --- a/drivers/mtd/ubi/block.c
 +++ b/drivers/mtd/ubi/block.c
-@@ -433,6 +433,9 @@ int ubiblock_create(struct ubi_volume_in
+@@ -413,6 +413,9 @@ int ubiblock_create(struct ubi_volume_in
  	}
  	gd->flags |= GENHD_FL_NO_PART;
  	gd->private_data = dev;

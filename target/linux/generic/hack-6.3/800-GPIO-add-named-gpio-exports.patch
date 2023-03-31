@@ -15,7 +15,7 @@ Signed-off-by: John Crispin <blogic@openwrt.org>
  
  #include "gpiolib.h"
  #include "gpiolib-of.h"
-@@ -1086,3 +1088,72 @@ void of_gpiochip_remove(struct gpio_chip *chip)
+@@ -1086,3 +1088,72 @@ void of_gpiochip_remove(struct gpio_chip
  {
  	fwnode_handle_put(chip->fwnode);
  }
@@ -91,7 +91,7 @@ Signed-off-by: John Crispin <blogic@openwrt.org>
 \ No newline at end of file
 --- a/include/asm-generic/gpio.h
 +++ b/include/asm-generic/gpio.h
-@@ -97,6 +97,12 @@ static inline int gpio_export(unsigned gpio, bool direction_may_change)
+@@ -97,6 +97,12 @@ static inline int gpio_export(unsigned g
  	return gpiod_export(gpio_to_desc(gpio), direction_may_change);
  }
  
@@ -106,7 +106,7 @@ Signed-off-by: John Crispin <blogic@openwrt.org>
  	gpiod_unexport(gpio_to_desc(gpio));
 --- a/include/linux/gpio/consumer.h
 +++ b/include/linux/gpio/consumer.h
-@@ -694,6 +694,7 @@ static inline struct gpio_desc *acpi_get
+@@ -646,6 +646,7 @@ static inline struct gpio_desc *acpi_get
  
  #if IS_ENABLED(CONFIG_GPIOLIB) && IS_ENABLED(CONFIG_GPIO_SYSFS)
  
@@ -114,7 +114,7 @@ Signed-off-by: John Crispin <blogic@openwrt.org>
  int gpiod_export(struct gpio_desc *desc, bool direction_may_change);
  int gpiod_export_link(struct device *dev, const char *name,
  		      struct gpio_desc *desc);
-@@ -701,6 +702,13 @@ void gpiod_unexport(struct gpio_desc *de
+@@ -653,6 +654,13 @@ void gpiod_unexport(struct gpio_desc *de
  
  #else  /* CONFIG_GPIOLIB && CONFIG_GPIO_SYSFS */
  
