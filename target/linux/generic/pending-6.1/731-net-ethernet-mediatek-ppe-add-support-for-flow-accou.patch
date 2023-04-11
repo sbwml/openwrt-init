@@ -53,7 +53,7 @@ v2: fix wrong variable name in return value check spotted by Denis Kirjanov
 
 --- a/drivers/net/ethernet/mediatek/mtk_eth_soc.c
 +++ b/drivers/net/ethernet/mediatek/mtk_eth_soc.c
-@@ -4377,7 +4377,9 @@ static int mtk_probe(struct platform_dev
+@@ -4378,7 +4378,9 @@ static int mtk_probe(struct platform_dev
  			u32 ppe_addr = eth->soc->reg_map->ppe_base + i * 0x400;
  
  			eth->ppe[i] = mtk_ppe_init(eth, eth->base + ppe_addr,
@@ -64,7 +64,7 @@ v2: fix wrong variable name in return value check spotted by Denis Kirjanov
  			if (!eth->ppe[i]) {
  				err = -ENOMEM;
  				goto err_deinit_ppe;
-@@ -4501,6 +4503,7 @@ static const struct mtk_soc_data mt7622_
+@@ -4502,6 +4504,7 @@ static const struct mtk_soc_data mt7622_
  	.required_pctl = false,
  	.offload_version = 2,
  	.hash_offset = 2,
@@ -72,7 +72,7 @@ v2: fix wrong variable name in return value check spotted by Denis Kirjanov
  	.foe_entry_size = sizeof(struct mtk_foe_entry) - 16,
  	.txrx = {
  		.txd_size = sizeof(struct mtk_tx_dma),
-@@ -4538,6 +4541,7 @@ static const struct mtk_soc_data mt7629_
+@@ -4539,6 +4542,7 @@ static const struct mtk_soc_data mt7629_
  	.hw_features = MTK_HW_FEATURES,
  	.required_clks = MT7629_CLKS_BITMAP,
  	.required_pctl = false,
@@ -80,7 +80,7 @@ v2: fix wrong variable name in return value check spotted by Denis Kirjanov
  	.txrx = {
  		.txd_size = sizeof(struct mtk_tx_dma),
  		.rxd_size = sizeof(struct mtk_rx_dma),
-@@ -4557,6 +4561,7 @@ static const struct mtk_soc_data mt7986_
+@@ -4558,6 +4562,7 @@ static const struct mtk_soc_data mt7986_
  	.required_pctl = false,
  	.hash_offset = 4,
  	.foe_entry_size = sizeof(struct mtk_foe_entry),
@@ -90,7 +90,7 @@ v2: fix wrong variable name in return value check spotted by Denis Kirjanov
  		.rxd_size = sizeof(struct mtk_rx_dma_v2),
 --- a/drivers/net/ethernet/mediatek/mtk_eth_soc.h
 +++ b/drivers/net/ethernet/mediatek/mtk_eth_soc.h
-@@ -1011,6 +1011,7 @@ struct mtk_soc_data {
+@@ -1012,6 +1012,7 @@ struct mtk_soc_data {
  	u8		hash_offset;
  	u16		foe_entry_size;
  	netdev_features_t hw_features;
@@ -147,10 +147,10 @@ v2: fix wrong variable name in return value check spotted by Denis Kirjanov
  static void mtk_ppe_cache_clear(struct mtk_ppe *ppe)
  {
  	ppe_set(ppe, MTK_PPE_CACHE_CTL, MTK_PPE_CACHE_CTL_CLEAR);
-@@ -438,6 +478,13 @@ __mtk_foe_entry_clear(struct mtk_ppe *pp
- 		hwe->ib1 &= ~MTK_FOE_IB1_STATE;
+@@ -439,6 +479,13 @@ __mtk_foe_entry_clear(struct mtk_ppe *pp
  		hwe->ib1 |= FIELD_PREP(MTK_FOE_IB1_STATE, MTK_FOE_STATE_INVALID);
  		dma_wmb();
+ 		mtk_ppe_cache_clear(ppe);
 +		if (ppe->accounting) {
 +			struct mtk_foe_accounting *acct;
 +
@@ -161,7 +161,7 @@ v2: fix wrong variable name in return value check spotted by Denis Kirjanov
  	}
  	entry->hash = 0xffff;
  
-@@ -545,6 +592,9 @@ __mtk_foe_entry_commit(struct mtk_ppe *p
+@@ -546,6 +593,9 @@ __mtk_foe_entry_commit(struct mtk_ppe *p
  	wmb();
  	hwe->ib1 = entry->ib1;
  
@@ -276,7 +276,7 @@ v2: fix wrong variable name in return value check spotted by Denis Kirjanov
  #define MTK_FOE_IB2_WDMA_DEVIDX		BIT(16)
  #define MTK_FOE_IB2_WDMA_WINFO		BIT(17)
  
-@@ -284,16 +285,34 @@ struct mtk_flow_entry {
+@@ -283,16 +284,34 @@ struct mtk_flow_entry {
  	unsigned long cookie;
  };
  
@@ -311,7 +311,7 @@ v2: fix wrong variable name in return value check spotted by Denis Kirjanov
  	u16 foe_check_time[MTK_PPE_ENTRIES];
  	struct hlist_head *foe_flow;
  
-@@ -303,7 +322,7 @@ struct mtk_ppe {
+@@ -302,7 +321,7 @@ struct mtk_ppe {
  };
  
  struct mtk_ppe *mtk_ppe_init(struct mtk_eth *eth, void __iomem *base,
@@ -320,7 +320,7 @@ v2: fix wrong variable name in return value check spotted by Denis Kirjanov
  void mtk_ppe_deinit(struct mtk_eth *eth);
  void mtk_ppe_start(struct mtk_ppe *ppe);
  int mtk_ppe_stop(struct mtk_ppe *ppe);
-@@ -356,5 +375,7 @@ int mtk_foe_entry_commit(struct mtk_ppe
+@@ -355,5 +374,7 @@ int mtk_foe_entry_commit(struct mtk_ppe
  void mtk_foe_entry_clear(struct mtk_ppe *ppe, struct mtk_flow_entry *entry);
  int mtk_foe_entry_idle_time(struct mtk_ppe *ppe, struct mtk_flow_entry *entry);
  int mtk_ppe_debugfs_init(struct mtk_ppe *ppe, int index);
