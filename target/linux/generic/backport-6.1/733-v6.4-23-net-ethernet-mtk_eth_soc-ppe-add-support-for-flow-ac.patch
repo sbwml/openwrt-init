@@ -1,55 +1,29 @@
-From patchwork Wed Nov  2 00:58:01 2022
-Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Patchwork-Submitter: Daniel Golle <daniel@makrotopia.org>
-X-Patchwork-Id: 13027653
-X-Patchwork-Delegate: kuba@kernel.org
-Return-Path: <netdev-owner@kernel.org>
-Date: Wed, 2 Nov 2022 00:58:01 +0000
+From f601293f37c4be618c5efaef85d2ee21f97e82e0 Mon Sep 17 00:00:00 2001
 From: Daniel Golle <daniel@makrotopia.org>
-To: Felix Fietkau <nbd@nbd.name>, John Crispin <john@phrozen.org>,
-        Sean Wang <sean.wang@mediatek.com>,
-        Mark Lee <Mark-MC.Lee@mediatek.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v4] net: ethernet: mediatek: ppe: add support for flow
+Date: Sun, 19 Mar 2023 12:57:35 +0000
+Subject: [PATCH 092/250] net: ethernet: mtk_eth_soc: ppe: add support for flow
  accounting
-Message-ID: <Y2HAmYYPd77dz+K5@makrotopia.org>
 MIME-Version: 1.0
-Content-Disposition: inline
-Precedence: bulk
-List-ID: <netdev.vger.kernel.org>
-X-Mailing-List: netdev@vger.kernel.org
-X-Patchwork-Delegate: kuba@kernel.org
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
 The PPE units found in MT7622 and newer support packet and byte
-accounting of hw-offloaded flows. Add support for reading those
-counters as found in MediaTek's SDK[1].
+accounting of hw-offloaded flows. Add support for reading those counters
+as found in MediaTek's SDK[1].
 
 [1]: https://git01.mediatek.com/plugins/gitiles/openwrt/feeds/mtk-openwrt-feeds/+/bc6a6a375c800dc2b80e1a325a2c732d1737df92
+Tested-by: Bjørn Mork <bjorn@mork.no>
 Signed-off-by: Daniel Golle <daniel@makrotopia.org>
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 ---
-v4: declare function mtk_mib_entry_read as static
-v3: don't bother to set 'false' values in any zero-initialized struct
-    use mtk_foe_entry_ib2
-    both changes were requested by Felix Fietkau
-
-v2: fix wrong variable name in return value check spotted by Denis Kirjanov
-
- drivers/net/ethernet/mediatek/mtk_eth_soc.c   |   7 +-
- drivers/net/ethernet/mediatek/mtk_eth_soc.h   |   1 +
- drivers/net/ethernet/mediatek/mtk_ppe.c       | 110 +++++++++++++++++-
- drivers/net/ethernet/mediatek/mtk_ppe.h       |  23 +++-
+ drivers/net/ethernet/mediatek/mtk_eth_soc.c   |   8 +-
+ drivers/net/ethernet/mediatek/mtk_eth_soc.h   |   3 +
+ drivers/net/ethernet/mediatek/mtk_ppe.c       | 114 +++++++++++++++++-
+ drivers/net/ethernet/mediatek/mtk_ppe.h       |  25 +++-
  .../net/ethernet/mediatek/mtk_ppe_debugfs.c   |   9 +-
- .../net/ethernet/mediatek/mtk_ppe_offload.c   |   7 ++
+ .../net/ethernet/mediatek/mtk_ppe_offload.c   |   8 ++
  drivers/net/ethernet/mediatek/mtk_ppe_regs.h  |  14 +++
- 7 files changed, 166 insertions(+), 5 deletions(-)
+ 7 files changed, 172 insertions(+), 9 deletions(-)
 
 --- a/drivers/net/ethernet/mediatek/mtk_eth_soc.c
 +++ b/drivers/net/ethernet/mediatek/mtk_eth_soc.c
@@ -64,7 +38,7 @@ v2: fix wrong variable name in return value check spotted by Denis Kirjanov
  			if (!eth->ppe[i]) {
  				err = -ENOMEM;
  				goto err_deinit_ppe;
-@@ -4816,6 +4816,7 @@ static const struct mtk_soc_data mt7622_
+@@ -4814,6 +4814,7 @@ static const struct mtk_soc_data mt7622_
  	.required_pctl = false,
  	.offload_version = 2,
  	.hash_offset = 2,
@@ -72,7 +46,7 @@ v2: fix wrong variable name in return value check spotted by Denis Kirjanov
  	.foe_entry_size = sizeof(struct mtk_foe_entry) - 16,
  	.txrx = {
  		.txd_size = sizeof(struct mtk_tx_dma),
-@@ -4853,6 +4854,7 @@ static const struct mtk_soc_data mt7629_
+@@ -4851,6 +4852,7 @@ static const struct mtk_soc_data mt7629_
  	.hw_features = MTK_HW_FEATURES,
  	.required_clks = MT7629_CLKS_BITMAP,
  	.required_pctl = false,
@@ -80,7 +54,7 @@ v2: fix wrong variable name in return value check spotted by Denis Kirjanov
  	.txrx = {
  		.txd_size = sizeof(struct mtk_tx_dma),
  		.rxd_size = sizeof(struct mtk_rx_dma),
-@@ -4873,6 +4875,7 @@ static const struct mtk_soc_data mt7981_
+@@ -4871,6 +4873,7 @@ static const struct mtk_soc_data mt7981_
  	.offload_version = 2,
  	.hash_offset = 4,
  	.foe_entry_size = sizeof(struct mtk_foe_entry),
@@ -88,8 +62,8 @@ v2: fix wrong variable name in return value check spotted by Denis Kirjanov
  	.txrx = {
  		.txd_size = sizeof(struct mtk_tx_dma_v2),
  		.rxd_size = sizeof(struct mtk_rx_dma_v2),
-@@ -4892,6 +4895,7 @@ static const struct mtk_soc_data mt7986_
- 	.required_pctl = false,
+@@ -4891,6 +4894,7 @@ static const struct mtk_soc_data mt7986_
+ 	.offload_version = 2,
  	.hash_offset = 4,
  	.foe_entry_size = sizeof(struct mtk_foe_entry),
 +	.has_accounting = true,
@@ -98,7 +72,7 @@ v2: fix wrong variable name in return value check spotted by Denis Kirjanov
  		.rxd_size = sizeof(struct mtk_rx_dma_v2),
 --- a/drivers/net/ethernet/mediatek/mtk_eth_soc.h
 +++ b/drivers/net/ethernet/mediatek/mtk_eth_soc.h
-@@ -1017,6 +1017,8 @@ struct mtk_reg_map {
+@@ -1011,6 +1011,8 @@ struct mtk_reg_map {
   *				the extra setup for those pins used by GMAC.
   * @hash_offset			Flow table hash offset.
   * @foe_entry_size		Foe table entry size.
@@ -107,7 +81,7 @@ v2: fix wrong variable name in return value check spotted by Denis Kirjanov
   * @txd_size			Tx DMA descriptor size.
   * @rxd_size			Rx DMA descriptor size.
   * @rx_irq_done_mask		Rx irq done register mask.
-@@ -1034,6 +1036,7 @@ struct mtk_soc_data {
+@@ -1028,6 +1030,7 @@ struct mtk_soc_data {
  	u8		hash_offset;
  	u16		foe_entry_size;
  	netdev_features_t hw_features;
@@ -328,17 +302,18 @@ v2: fix wrong variable name in return value check spotted by Denis Kirjanov
  	u16 foe_check_time[MTK_PPE_ENTRIES];
  	struct hlist_head *foe_flow;
  
-@@ -303,8 +322,7 @@ struct mtk_ppe {
+@@ -303,8 +322,8 @@ struct mtk_ppe {
  	void *acct_table;
  };
  
 -struct mtk_ppe *mtk_ppe_init(struct mtk_eth *eth, void __iomem *base,
 -			     int version, int index);
 +struct mtk_ppe *mtk_ppe_init(struct mtk_eth *eth, void __iomem *base, int index);
++
  void mtk_ppe_deinit(struct mtk_eth *eth);
  void mtk_ppe_start(struct mtk_ppe *ppe);
  int mtk_ppe_stop(struct mtk_ppe *ppe);
-@@ -359,5 +377,7 @@ int mtk_foe_entry_commit(struct mtk_ppe
+@@ -359,5 +378,7 @@ int mtk_foe_entry_commit(struct mtk_ppe
  void mtk_foe_entry_clear(struct mtk_ppe *ppe, struct mtk_flow_entry *entry);
  int mtk_foe_entry_idle_time(struct mtk_ppe *ppe, struct mtk_flow_entry *entry);
  int mtk_ppe_debugfs_init(struct mtk_ppe *ppe, int index);

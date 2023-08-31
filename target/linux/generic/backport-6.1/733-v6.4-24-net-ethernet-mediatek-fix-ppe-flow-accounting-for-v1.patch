@@ -1,17 +1,24 @@
+From 88a0fd5927b7c2c7aecd6dc747d898eb38043d2b Mon Sep 17 00:00:00 2001
 From: Felix Fietkau <nbd@nbd.name>
-Date: Thu, 23 Mar 2023 21:45:43 +0100
-Subject: [PATCH] net: ethernet: mediatek: fix ppe flow accounting for v1
- hardware
+Date: Thu, 20 Apr 2023 22:06:42 +0100
+Subject: [PATCH 093/250] net: mtk_eth_soc: mediatek: fix ppe flow accounting
+ for v1 hardware
 
 Older chips (like MT7622) use a different bit in ib2 to enable hardware
-counter support.
+counter support. Add macros for both and select the appropriate bit.
 
+Fixes: 3fbe4d8c0e53 ("net: ethernet: mtk_eth_soc: ppe: add support for flow accounting")
 Signed-off-by: Felix Fietkau <nbd@nbd.name>
+Signed-off-by: Daniel Golle <daniel@makrotopia.org>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 ---
+ drivers/net/ethernet/mediatek/mtk_ppe.c | 10 ++++++++--
+ drivers/net/ethernet/mediatek/mtk_ppe.h |  3 ++-
+ 2 files changed, 10 insertions(+), 3 deletions(-)
 
 --- a/drivers/net/ethernet/mediatek/mtk_ppe.c
 +++ b/drivers/net/ethernet/mediatek/mtk_ppe.c
-@@ -640,6 +640,7 @@ __mtk_foe_entry_commit(struct mtk_ppe *p
+@@ -599,6 +599,7 @@ __mtk_foe_entry_commit(struct mtk_ppe *p
  	struct mtk_eth *eth = ppe->eth;
  	u16 timestamp = mtk_eth_timestamp(eth);
  	struct mtk_foe_entry *hwe;
@@ -19,7 +26,7 @@ Signed-off-by: Felix Fietkau <nbd@nbd.name>
  
  	if (MTK_HAS_CAPS(eth->soc->caps, MTK_NETSYS_V2)) {
  		entry->ib1 &= ~MTK_FOE_IB1_BIND_TIMESTAMP_V2;
-@@ -656,8 +657,13 @@ __mtk_foe_entry_commit(struct mtk_ppe *p
+@@ -615,8 +616,13 @@ __mtk_foe_entry_commit(struct mtk_ppe *p
  	wmb();
  	hwe->ib1 = entry->ib1;
  
