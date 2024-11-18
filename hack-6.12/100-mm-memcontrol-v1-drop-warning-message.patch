@@ -10,7 +10,7 @@ Signed-off-by: sbwml <admin@cooluc.com>
 
 --- a/mm/memcontrol-v1.c
 +++ b/mm/memcontrol-v1.c
-@@ -1994,15 +1994,9 @@ static ssize_t memcg_write_event_control
+@@ -2019,15 +2019,9 @@ static ssize_t memcg_write_event_control
  		event->register_event = mem_cgroup_usage_register_event;
  		event->unregister_event = mem_cgroup_usage_unregister_event;
  	} else if (!strcmp(name, "memory.oom_control")) {
@@ -26,7 +26,7 @@ Signed-off-by: sbwml <admin@cooluc.com>
  		event->register_event = vmpressure_register_event;
  		event->unregister_event = vmpressure_unregister_event;
  	} else if (!strcmp(name, "memory.memsw.usage_in_bytes")) {
-@@ -2847,10 +2841,6 @@ static int mem_cgroup_oom_control_write(
+@@ -2872,10 +2866,6 @@ static int mem_cgroup_oom_control_write(
  {
  	struct mem_cgroup *memcg = mem_cgroup_from_css(css);
  
