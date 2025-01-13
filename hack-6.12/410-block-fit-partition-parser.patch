@@ -1,10 +1,9 @@
 --- a/block/blk.h
 +++ b/block/blk.h
-@@ -564,6 +564,8 @@ void blk_free_ext_minor(unsigned int min
- #define ADDPART_FLAG_NONE	0
+@@ -556,6 +556,7 @@ void blk_free_ext_minor(unsigned int min
  #define ADDPART_FLAG_RAID	1
  #define ADDPART_FLAG_WHOLEDISK	2
-+#define ADDPART_FLAG_READONLY	4
+ #define ADDPART_FLAG_READONLY	4
 +#define ADDPART_FLAG_ROOTDEV	8
  int bdev_add_partition(struct gendisk *disk, int partno, sector_t start,
  		sector_t length);
@@ -45,7 +44,7 @@
  int ibm_partition(struct parsed_partitions *);
  int karma_partition(struct parsed_partitions *state);
  int ldm_partition(struct parsed_partitions *state);
-@@ -67,3 +68,5 @@ int sgi_partition(struct parsed_partitio
+@@ -68,3 +69,5 @@ int sgi_partition(struct parsed_partitio
  int sun_partition(struct parsed_partitions *state);
  int sysv68_partition(struct parsed_partitions *state);
  int ultrix_partition(struct parsed_partitions *state);
@@ -64,7 +63,7 @@
  #include "check.h"
  
  static int (*const check_part[])(struct parsed_partitions *) = {
-@@ -46,6 +50,9 @@ static int (*const check_part[])(struct
+@@ -49,6 +53,9 @@ static int (*const check_part[])(struct
  #ifdef CONFIG_EFI_PARTITION
  	efi_partition,		/* this must come before msdos */
  #endif
@@ -74,9 +73,9 @@
  #ifdef CONFIG_SGI_PARTITION
  	sgi_partition,
  #endif
-@@ -373,6 +380,11 @@ static struct block_device *add_partitio
- 			goto out_del;
- 	}
+@@ -379,6 +386,11 @@ static struct block_device *add_partitio
+ 	if (flags & ADDPART_FLAG_READONLY)
+ 		bdev_set_flag(bdev, BD_READ_ONLY);
  
 +#ifdef CONFIG_FIT_PARTITION
 +	if (flags & ADDPART_FLAG_READONLY)
@@ -86,7 +85,7 @@
  	/* everything is up and running, commence */
  	err = xa_insert(&disk->part_tbl, partno, bdev, GFP_KERNEL);
  	if (err)
-@@ -567,6 +579,11 @@ static bool blk_add_partition(struct gen
+@@ -573,6 +585,11 @@ static bool blk_add_partition(struct gen
  	    (state->parts[p].flags & ADDPART_FLAG_RAID))
  		md_autodetect_dev(part->bd_dev);
  
